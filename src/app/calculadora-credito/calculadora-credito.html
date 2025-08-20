@@ -1,1 +1,36 @@
-<p>calculadora-credito works!</p>
+<div class="flex flex-col items-center justify-center h-screen bg-[#F4f4f4]">
+
+  <h2 class="text-2xl font-bold mb-6 text-[#005CA9]">Simuladora de Crédito</h2>
+
+  <form 
+    #simuladorForm="ngForm" 
+    (ngSubmit)="calcularParcela()" 
+    class="flex flex-col w-full max-w-sm bg-white p-6 rounded-lg shadow">
+
+    <label class="mb-2 font-medium">Produto de Crédito</label>
+    <select name="produto" [(ngModel)]="produtoSelecionadoId" required class="mb-4 p-2 border rounded">
+      <option *ngFor="let produto of produtos" [value]="produto.id">{{ produto.nome }}</option>
+    </select>
+
+    <label class="mb-2 font-medium">Valor desejado (R$)</label>
+    <input name="valor" type="number" [(ngModel)]="valorDesejado" required min="1" class="mb-4 p-2 border rounded" />
+
+    <label class="mb-2 font-medium">Prazo (meses)</label>
+    <input name="prazo" type="number" [(ngModel)]="prazo" required min="1" class="mb-4 p-2 border rounded" />
+
+    <button type="submit"
+            [disabled]="!simuladorForm.form.valid"
+            class="w-full px-4 py-2 bg-[#005CA9] text-white rounded-lg shadow hover:bg-[#00457A] transition">
+      Simular
+    </button>
+  </form>
+
+  <div *ngIf="parcela !== null" class="mt-6 p-4 bg-[#e0e7ef] rounded shadow text-center">
+    <h3 class="font-bold text-[#005CA9] mb-2">Resultado da Simulação</h3>
+    <p>Produto: <span class="font-bold">{{ produtoNome }}</span></p>
+    <p>Valor Solicitado: <span class="font-bold">{{ valorDesejado | currency:'BRL':'symbol':'1.2-2'  }}</span></p>
+    <p>Prazo: <span class="font-bold">{{ prazo }} meses</span></p>
+    <p>Valor da parcela: <span class="font-bold">{{ parcela | currency:'BRL':'symbol':'1.2-2' }}</span></p>
+    <p>Taxa efetiva mensal: <span class="font-bold"> {{ taxaMensal | percent: '1.2'}}</span></p>
+  </div>
+</div>

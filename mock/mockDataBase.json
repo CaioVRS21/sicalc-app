@@ -1,22 +1,34 @@
 {
   "produtos": [
     {
-      "id": 1,
+      "id": "1",
       "nome": "Empréstimo Pessoal",
       "taxaAnual": 16.68,
       "prazoMaximoMeses": 12
     },
     {
-      "id": 2,
+      "id": "2",
       "nome": "Crédito Consignado",
       "taxaAnual": 12.5,
       "prazoMaximoMeses": 24
     },
     {
-      "id": 3,
+      "id": "3",
       "nome": "Financiamento Imobiliário",
       "taxaAnual": 9.9,
       "prazoMaximoMeses": 360
+    },
+    {
+      "id": 4,
+      "nome": "NomeTeste1",
+      "taxaAnual": 12,
+      "prazoMaximoMeses": 12
+    },
+    {
+      "id": 5,
+      "nome": "NomeTeste2",
+      "taxaAnual": 13,
+      "prazoMaximoMeses": 21
     }
   ]
 }

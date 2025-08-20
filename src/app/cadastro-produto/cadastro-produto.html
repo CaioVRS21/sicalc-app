@@ -1,1 +1,25 @@
-<p>cadastro-produto works!</p>
+<div class="flex flex-col items-center justify-center h-screen bg-[#F4f4f4]">
+  <h2 class="text-2xl font-bold mb-6 text-[#005CA9]">Cadastro de Produto</h2>
+  <form #produtoForm="ngForm" (ngSubmit)="onSubmit()"
+        class="flex flex-col w-full max-w-sm bg-white p-6 rounded-lg shadow">
+    <label class="mb-2 font-medium">Nome</label>
+    <input name="nome" [(ngModel)]="produto.nome" required class="mb-4 p-2 border rounded" />
+
+    <label class="mb-2 font-medium">Taxa Anual (%)</label>
+    <input name="taxaAnual" type="number" [(ngModel)]="produto.taxaAnual" required class="mb-4 p-2 border rounded" />
+
+    <label class="mb-2 font-medium">Prazo Máximo (meses)</label>
+    <input name="prazoMaximoMeses" type="number" [(ngModel)]="produto.prazoMaximoMeses" required class="mb-4 p-2 border rounded" />
+
+    <button type="submit"
+            [disabled]="!produtoForm.form.valid"
+            class="w-full px-4 py-2 bg-[#005CA9] text-white rounded-lg shadow hover:bg-[#00457A] transition">
+      Cadastrar
+    </button>
+  </form>
+    <button
+        class="px-4 py-4 mt-4 mb-4 bg-[#005CA9] text-white rounded-lg shadow hover:bg-[#00457A] transition"
+        routerLink="/home">
+        Retornar
+    </button>
+</div>

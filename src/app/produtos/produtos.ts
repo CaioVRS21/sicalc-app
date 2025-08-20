@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ProdutosService, Produto } from '../service/produtos-service';
 import { NgFor } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-produtos',
-  imports: [NgFor],
+  imports: [NgFor, RouterLink],
   templateUrl: './produtos.html',
   styleUrl: './produtos.css'
 })

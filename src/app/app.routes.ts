@@ -2,10 +2,12 @@ import { Routes } from '@angular/router';
 import { Home } from './home/home';
 import { Produtos } from './produtos/produtos';
 import { CadastroProduto } from './cadastro-produto/cadastro-produto';
+import { CalculadoraCredito } from './calculadora-credito/calculadora-credito';
 
 export const routes: Routes = [
     { path: '', component: Home },
     { path: 'home', component: Home },
     { path: 'produtos', component: Produtos },
-    { path: 'cadastro-produto', component: CadastroProduto}
+    { path: 'cadastro-produto', component: CadastroProduto},
+    { path: 'calculadora-credito', component: CalculadoraCredito}
 ];

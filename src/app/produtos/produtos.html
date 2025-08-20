@@ -1,1 +1,19 @@
-<p>produtos works!</p>
+<h2 class="text-2xl font-bold ">
+    Produtos de Crédito
+</h2>
+
+<ul class="space-y-4">
+    <li
+    *ngFor="let produto of produtos"
+    class="p-4 border. rounded-lg shadow-sm bg-white">
+    <h3 class="text-lg font-semibold text-blue-600">
+        {{produto.nome}}
+    </h3>
+    <p>
+        Taxa anual: <span class="font-medium">{{produto.taxaAnual}}</span>
+    </p>
+    <p>
+        Prazo Máximo: <span class="font-medium">{{produto.prazoMaxMeses}} meses</span>
+    </p>
+    </li>
+</ul>

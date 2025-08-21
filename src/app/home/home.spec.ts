@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Home } from './home';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('Home', () => {
   let component: Home;
@@ -8,7 +10,17 @@ describe('Home', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Home]
+      imports: [Home],
+      providers: [
+        {
+        provide: ActivatedRoute,
+        useValue: {
+          snapshot: { paramMap: new Map() },
+          params: of({}),
+          queryParams: of({})
+        }
+      }
+      ]
     })
     .compileComponents();
 

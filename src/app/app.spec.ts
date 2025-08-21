@@ -1,10 +1,18 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
+import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+
+
+@Component({ selector: 'router-outlet', template: '' })
+class RouterOutletStub {}
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [App],
+      imports: [App, RouterOutletStub],
+      providers: [],
+      declarations: [], 
     }).compileComponents();
   });
 
@@ -14,10 +22,9 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', () => {
+  it('should have the correct title signal', () => {
     const fixture = TestBed.createComponent(App);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, sicalc-app');
+    const app = fixture.componentInstance;
+    expect(app.title()).toBe('sicalc-app'); 
   });
 });

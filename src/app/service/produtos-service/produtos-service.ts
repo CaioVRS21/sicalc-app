@@ -6,8 +6,8 @@ import { enviroment } from '../../../enviroments/enviroment';
 export interface Produto {
   id: number,
   nome: string,
-  taxaAnual: null,
-  prazoMaximoMeses: null
+  taxaAnual: number | null,
+  prazoMaximoMeses: number | null
 }
 
 @Injectable({

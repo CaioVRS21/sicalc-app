@@ -13,13 +13,18 @@ import { ProdutosService } from '../service/produtos-service/produtos-service';
 export class CadastroProduto {
   produto = {
     nome: '',
-    taxaAnual: null,
-    prazoMaximoMeses: null
+    taxaAnual: 0,
+    prazoMaximoMeses: 0
   };
 
   constructor(private produtosService: ProdutosService) {}
 
   onSubmit() {
+    if (!this.produto.nome || this.produto.taxaAnual <= 0 || this.produto.prazoMaximoMeses <= 0) {
+    console.warn('Produto inválido, não será cadastrado');
+    return;
+  }
+  
     this.produtosService.listarProdutos().subscribe({
     next: (produtos) => {
       const maxId = produtos.length > 0
@@ -32,7 +37,7 @@ export class CadastroProduto {
       this.produtosService.cadastrarProduto(novoProduto).subscribe({
         next: (res) => {
           console.log('Produto cadastrado:', res);
-          this.produto = { nome: '', taxaAnual: null, prazoMaximoMeses: null };
+          this.produto = { nome: '', taxaAnual: 0, prazoMaximoMeses: 0 };
         },
         error: (err) => {
           console.error('Erro ao cadastrar produto:', err);

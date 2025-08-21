@@ -12,6 +12,7 @@ import { SimulacoesService } from '../service/simulacoes-service/simulacoes-serv
   styleUrl: './calculadora-credito.css'
 })
 export class CalculadoraCredito {
+  tipoCalculo: 'price' | 'sac' = 'price';
   produtos: Produto[] = [];
   produtoNome: string = '';
   produtoSelecionadoId: number | null = null;
@@ -20,6 +21,8 @@ export class CalculadoraCredito {
   prazo: number | null = null;
   parcela: number | null = null;
   taxaMensal: number | null = null;
+  amortizacao: number[] = []; // novo campo para o resultado do cálculo SAC
+  tabelaAmortizacao: { parcela: number; juros: number; amortizacao: number; saldo: number; }[] = [];
 
   constructor(
     private produtosService: ProdutosService,
@@ -35,15 +38,49 @@ export class CalculadoraCredito {
     });
   }
 
-  calcularParcela() {
+  calcular() {
+  if (this.tipoCalculo === 'price') {
+    this.calcularParcela();
     const produto = this.produtos.find(p => Number(p.id) === Number(this.produtoSelecionadoId));
+    if (produto && this.valorDesejado && this.prazo) {
+      this.salvarSimulacao(
+        produto,
+        Number(produto.taxaAnual) / 12 / 100,
+        this.tabelaAmortizacao[0]?.parcela ?? 0,
+        this.prazo,
+        this.valorDesejado,
+        this.tabelaAmortizacao.reduce((acc, cur) => acc + cur.parcela, 0),
+        this.tipoCalculo,
+        this.tabelaAmortizacao
+      );
+    }
+  } else if (this.tipoCalculo === 'sac') {
+    this.calcularAmortizacaoSAC();
+    const produto = this.produtos.find(p => Number(p.id) === Number(this.produtoSelecionadoId));
+    if (produto && this.valorDesejado && this.prazo) {
+      this.salvarSimulacao(
+        produto,
+        Number(produto.taxaAnual) / 12 / 100,
+        this.tabelaAmortizacao[0]?.parcela ?? 0,
+        this.prazo,
+        this.valorDesejado,
+        this.tabelaAmortizacao.reduce((acc, cur) => acc + cur.parcela, 0),
+        this.tipoCalculo,
+        this.tabelaAmortizacao
+      );
+    }
+  } 
+}
+
+calcularParcela() {
+  const produto = this.produtos.find(p => Number(p.id) === Number(this.produtoSelecionadoId));
   if (!produto || !this.valorDesejado || !this.prazo) {
     this.parcela = null;
     this.valorTotal = null;
     return;
   }
 
-  const taxaMensal = Number(produto.taxaAnual) / 12 / 100; // juros mensal
+  const taxaMensal = Number(produto.taxaAnual) / 12 / 100;
   const prazo = this.prazo;
   const valorDesejado = this.valorDesejado;
 
@@ -55,6 +92,37 @@ export class CalculadoraCredito {
   this.valorTotal = parcela * prazo;
   this.produtoNome = produto.nome;
 
+  // Monta a tabela de amortização para Price
+  this.tabelaAmortizacao = [];
+  let saldoDevedor = valorDesejado;
+  for (let mes = 1; mes <= prazo; mes++) {
+    const juros = saldoDevedor * taxaMensal;
+    const amortizacao = parcela - juros;
+    saldoDevedor -= amortizacao;
+    this.tabelaAmortizacao.push({
+      parcela,
+      juros,
+      amortizacao,
+      saldo: saldoDevedor > 0 ? saldoDevedor : 0
+    });
+  }
+
+  // Chama o método para salvar a simulação
+  this.salvarSimulacao(produto, taxaMensal, parcela, prazo, valorDesejado, this.valorTotal, this.tipoCalculo, this.tabelaAmortizacao);
+
+  console.log(`Parcela: ${this.parcela}, Taxa Mensal: ${this.taxaMensal}`);
+}
+
+salvarSimulacao(
+  produto: Produto,
+  taxaMensal: number,
+  parcela: number,
+  prazo: number,
+  valorDesejado: number,
+  valorTotal: number,
+  tipoCalculo: 'price' | 'sac',
+  tabelaAmortizacao: { parcela: number; juros: number; amortizacao: number; saldo: number; }[]
+) {
   this.simulacoesService.listarSimulacoes().subscribe({
     next: (simulacoes) => {
       const maxId = simulacoes.length > 0
@@ -67,7 +135,9 @@ export class CalculadoraCredito {
         parcela: parcela,
         prazo: prazo,
         valorDesejado: valorDesejado,
-        valorTotal: this.valorTotal ? this.valorTotal : 0
+        valorTotal: valorTotal,
+        tipoCalculo: tipoCalculo,
+        tabelaAmortizacao: [...tabelaAmortizacao]
       };
       this.simulacoesService.salvarSimulacao(novaSimulacao).subscribe({
         next: (res) => console.log('Simulação salva:', res),
@@ -76,7 +146,38 @@ export class CalculadoraCredito {
     },
     error: (err) => console.error('Erro ao buscar simulações:', err)
   });
+}
 
-  console.log(`Parcela: ${this.parcela}, Taxa Mensal: ${this.taxaMensal}`);
+ 
+
+  calcularAmortizacaoSAC() {
+  const produto = this.produtos.find(p => Number(p.id) === Number(this.produtoSelecionadoId));
+  if (!produto || !this.valorDesejado || !this.prazo) {
+    this.parcela = null;
+    return;
   }
+
+  const i = Number(produto.taxaAnual) / 12 / 100; // juros mensal
+  const n = this.prazo;
+  const P = this.valorDesejado;
+
+  const amortizacaoConstante = P / n;
+  let saldoDevedor = P;
+  const tabela: { parcela: number; juros: number; amortizacao: number; saldo: number; }[] = [];
+
+  for (let mes = 1; mes <= n; mes++) {
+    const juros = saldoDevedor * i;
+    const parcela = amortizacaoConstante + juros;
+    saldoDevedor -= amortizacaoConstante;
+
+    tabela.push({
+      parcela,
+      juros,
+      amortizacao: amortizacaoConstante,
+      saldo: saldoDevedor > 0 ? saldoDevedor : 0
+    });
+  }
+
+  this.tabelaAmortizacao = tabela;
+}
 }

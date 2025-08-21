@@ -4,7 +4,7 @@
 
   <form 
     #simuladorForm="ngForm" 
-    (ngSubmit)="calcularParcela()" 
+    (ngSubmit)="calcular()" 
     class="flex flex-col w-full max-w-sm bg-white p-6 rounded-lg shadow">
 
     <label class="mb-2 font-medium">Produto de Crédito</label>
@@ -18,6 +18,12 @@
     <label class="mb-2 font-medium">Prazo (meses)</label>
     <input name="prazo" type="number" [(ngModel)]="prazo" required min="1" class="mb-4 p-2 border rounded" />
 
+     <label class="mb-2 font-medium">Tipo de Amortização</label>
+    <select name="tipoCalculo" [(ngModel)]="tipoCalculo" required class="mb-4 p-2 border rounded">
+    <option value="price">Price (Parcelas Fixas)</option>
+    <option value="sac">SAC (Parcelas Decrescentes)</option>
+    </select>
+
     <button type="submit"
             [disabled]="!simuladorForm.form.valid"
             class="w-full px-4 py-2 bg-[#005CA9] text-white rounded-lg shadow hover:bg-[#00457A] transition">
@@ -30,13 +36,30 @@
         Retornar
     </button>
 
-  <div *ngIf="parcela !== null" class="mt-6 p-4 bg-[#e0e7ef] rounded shadow text-center">
-    <h3 class="font-bold text-[#005CA9] mb-2">Resultado da Simulação</h3>
-    <p>Produto: <span class="font-bold">{{ produtoNome }}</span></p>
-    <p>Valor Solicitado: <span class="font-bold">{{ valorDesejado | currency:'BRL':'symbol':'1.2-2'  }}</span></p>
-    <p>Prazo: <span class="font-bold">{{ prazo }} meses</span></p>
-    <p>Valor da parcela: <span class="font-bold">{{ parcela | currency:'BRL':'symbol':'1.2-2' }}</span></p>
-    <p>Taxa efetiva mensal: <span class="font-bold"> {{ taxaMensal | percent: '1.2'}}</span></p>
-    <p>Valor Total com juros: <span class="font-bold">{{ valorTotal | currency:'BRL':'symbol':'1.2-2'  }}</span></p>
-  </div>
+    <div *ngIf="tabelaAmortizacao.length" class="mt-6 bg-gray-50 p-4 rounded-lg shadow-md">
+  <h3 class="text-lg font-semibold text-gray-800 mb-4">
+    Tabela de Amortização ({{ tipoCalculo === 'sac' ? 'SAC' : 'Price' }})
+  </h3>
+
+  <table class="w-full text-sm border-collapse">
+    <thead class="bg-gray-200 text-gray-700">
+      <tr>
+        <th class="p-2 text-left">Mês</th>
+        <th class="p-2 text-right">Parcela</th>
+        <th class="p-2 text-right">Juros</th>
+        <th class="p-2 text-right">Amortização</th>
+        <th class="p-2 text-right">Saldo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let linha of tabelaAmortizacao; let i = index" class="border-b">
+        <td class="p-2">{{ i + 1 }}</td>
+        <td class="p-2 text-right">{{ linha.parcela | currency:'BRL':'symbol':'1.2-2' }}</td>
+        <td class="p-2 text-right">{{ linha.juros | currency:'BRL':'symbol':'1.2-2' }}</td>
+        <td class="p-2 text-right">{{ linha.amortizacao | currency:'BRL':'symbol':'1.2-2' }}</td>
+        <td class="p-2 text-right">{{ linha.saldo | currency:'BRL':'symbol':'1.2-2' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 </div>

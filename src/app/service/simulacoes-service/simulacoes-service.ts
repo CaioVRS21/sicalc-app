@@ -11,6 +11,8 @@ export interface Simulacao {
   prazo: number;
   valorDesejado: number;
   valorTotal: number;
+  tipoCalculo: 'price' | 'sac';
+  tabelaAmortizacao: { parcela: number; juros: number; amortizacao: number; saldo: number; }[];
 }
 
 @Injectable({ providedIn: 'root' })

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProdutosService, Produto } from '../service/produtos-service';
+import { ProdutosService, Produto } from '../service/produtos-service/produtos-service';
 import { NgFor } from '@angular/common';
 import { RouterLink } from '@angular/router';
 

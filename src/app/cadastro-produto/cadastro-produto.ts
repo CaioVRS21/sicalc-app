@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { ProdutosService } from '../service/produtos-service';
+import { ProdutosService } from '../service/produtos-service/produtos-service';
 
 @Component({
   selector: 'app-cadastro-produto',

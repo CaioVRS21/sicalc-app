@@ -24,6 +24,11 @@
       Simular
     </button>
   </form>
+  <button
+        class="px-4 py-4 mt-4 mb-4 bg-[#f39200] text-white rounded-lg shadow hover:bg-[#00457A] transition"
+        routerLink="/home">
+        Retornar
+    </button>
 
   <div *ngIf="parcela !== null" class="mt-6 p-4 bg-[#e0e7ef] rounded shadow text-center">
     <h3 class="font-bold text-[#005CA9] mb-2">Resultado da Simulação</h3>
@@ -32,5 +37,6 @@
     <p>Prazo: <span class="font-bold">{{ prazo }} meses</span></p>
     <p>Valor da parcela: <span class="font-bold">{{ parcela | currency:'BRL':'symbol':'1.2-2' }}</span></p>
     <p>Taxa efetiva mensal: <span class="font-bold"> {{ taxaMensal | percent: '1.2'}}</span></p>
+    <p>Valor Total com juros: <span class="font-bold">{{ valorTotal | currency:'BRL':'symbol':'1.2-2'  }}</span></p>
   </div>
 </div>

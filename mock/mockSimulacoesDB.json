@@ -1,0 +1,13 @@
+{
+  "simulacoes": [
+    {
+      "id": 1,
+      "produtoNome": "Empréstimo Pessoal",
+      "taxaMensal": 0.0139,
+      "parcela": 910.5295931643202,
+      "prazo": 12,
+      "valorDesejado": 10000,
+      "valorTotal": 10926.355117971842
+    }
+  ]
+}

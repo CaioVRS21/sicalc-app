@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { enviroment } from '../../enviroments/enviroment';
+import { enviroment } from '../../../enviroments/enviroment';
 
 export interface Produto {
   id: number,
@@ -14,12 +14,7 @@ export interface Produto {
   providedIn: 'root'
 })
 export class ProdutosService {
-  private apiUrl = `${enviroment.apiUrl}/produtos`
-  // produto = {
-  //   nome: '',
-  //   taxaAnual: null,
-  //   prazoMaximoMeses: null
-  // };
+  private apiUrl = `${enviroment.produtosApiUrl}/produtos`
 
   constructor(private http: HttpClient){}
 

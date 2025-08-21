@@ -1,4 +1,5 @@
 export const enviroment = {
     production: false,
-    apiUrl: 'http://localhost:3000'
+    produtosApiUrl: 'http://localhost:3000',
+    simulacoesApiUrl: 'http://localhost:3001'
 }

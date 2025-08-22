@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">sicalc-app</string>
+    <string name="title_activity_main">sicalc-app</string>
+    <string name="package_name">com.meuapp.sicalc</string>
+    <string name="custom_url_scheme">com.meuapp.sicalc</string>
+</resources>

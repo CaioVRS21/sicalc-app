@@ -31,10 +31,16 @@
       "prazoMaximoMeses": 21
     },
     {
-      "id": 6,
+      "id": "6",
       "nome": "teste15",
       "taxaAnual": 12,
       "prazoMaximoMeses": 12
+    },
+    {
+      "id": 7,
+      "nome": "Teste 15",
+      "taxaAnual": 120,
+      "prazoMaximoMeses": 24
     }
   ]
 }

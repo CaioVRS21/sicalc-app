@@ -2,6 +2,13 @@
 
 Projeto criado em angular com Angular 20.1.6 ([Angular CLI](https://github.com/angular/angular-cli) )
 
+## Para instalar as dependências
+
+Como o angular é muito rigido com as versões de suas dependências, rode o seguinte comando para que todas as partes do projeto sejam instaladas sem demais problemas
+
+```bash
+npm i --legacy-peer-deps
+```
 
 ## Servidor em Develop
 

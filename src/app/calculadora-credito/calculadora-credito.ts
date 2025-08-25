@@ -22,9 +22,11 @@ export class CalculadoraCredito {
   prazo: number | null = null;
   parcela: number | null = null;
   taxaMensal: number | null = null;
-  amortizacao: number[] = []; // novo campo para o resultado do cálculo SAC
+  amortizacao: number[] = []; 
   tabelaAmortizacao: { parcela: number; juros: number; amortizacao: number; saldo: number; }[] = [];
   prazoErroMsg: string | null = null;
+  currentPage = 1;
+  readonly pageSize = 12;
 
   constructor(
     private produtosService: ProdutosService,
@@ -139,6 +141,7 @@ calcularParcela() {
       saldo: saldoDevedor > 0 ? saldoDevedor : 0
     });
   }
+  this.resetPagination(); // Reseta para a primeira página da tabela
   console.log(`Parcela: ${this.parcela}, Taxa Mensal: ${this.taxaMensal}`);
 }
 
@@ -186,9 +189,7 @@ salvarSimulacao(
   });
 }
 
- 
-
-  calcularAmortizacaoSAC() {
+calcularAmortizacaoSAC() {
   const produto = this.produtos.find(p => Number(p.id) === Number(this.produtoSelecionadoId));
   if (!produto || !this.valorDesejado || !this.prazo) {
     this.parcela = null;
@@ -214,23 +215,42 @@ salvarSimulacao(
       amortizacao: amortizacaoConstante,
       saldo: saldoDevedor > 0 ? saldoDevedor : 0
     });
-  }
+}
 
-  this.tabelaAmortizacao = tabela;
+this.tabelaAmortizacao = tabela;
+this.currentPage = 1;
 }
 
  onProdutoChange() {
-    // limpa valores dependentes ao trocar produto
     this.valorDesejado = null;
     this.prazo = null;
     this.tabelaAmortizacao = [];
     this.prazoErroMsg = null;
+    this.currentPage = 1;
   }
 
   onValorChange() {
-    // limpa prazo/amortização quando valor muda
     this.prazo = null;
     this.tabelaAmortizacao = [];
     this.prazoErroMsg = null;
+    this.currentPage = 1;
   }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.tabelaAmortizacao.length / this.pageSize));
+  }
+
+  get pagedResults(){
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.tabelaAmortizacao.slice(start, start + this.pageSize);
+  }
+
+  prevPage() {
+      if (this.currentPage > 1) this.currentPage--;
+    }
+  nextPage() {
+    if (this.currentPage < this.totalPages) this.currentPage++;
+  }
+
+  private resetPagination() { this.currentPage = 1; }
 }

@@ -67,8 +67,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let linha of tabelaAmortizacao; let i = index" class="border-b">
-        <td class="p-2">{{ i + 1 }}</td>
+      <tr *ngFor="let linha of pagedResults; let i = index" class="border-b">
+        <td class="p-2">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
         <td class="p-2 text-right">{{ linha.parcela | currency:'BRL':'symbol':'1.2-2' }}</td>
         <td class="p-2 text-right">{{ linha.juros | currency:'BRL':'symbol':'1.2-2' }}</td>
         <td class="p-2 text-right">{{ linha.amortizacao | currency:'BRL':'symbol':'1.2-2' }}</td>
@@ -76,5 +76,15 @@
       </tr>
     </tbody>
   </table>
+
+  <div class="flex items-center justify-center gap-4 mt-3">
+    <button (click)="prevPage()" [disabled]="currentPage === 1"
+            class="px-3 py-1 border rounded disabled:opacity-50">‹</button>
+
+    <div class="text-sm text-gray-700">Página {{ currentPage }} / {{ totalPages }}</div>
+
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+            class="px-3 py-1 border rounded disabled:opacity-50">›</button>
+  </div>
 </div>
 </div>

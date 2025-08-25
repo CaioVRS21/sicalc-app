@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ProdutosService } from '../service/produtos-service/produtos-service';
+import { ToastService } from '../service/toast-service/toast-service';
 
 @Component({
   selector: 'app-cadastro-produto',
@@ -17,7 +18,9 @@ export class CadastroProduto {
     prazoMaximoMeses: 0
   };
 
-  constructor(private produtosService: ProdutosService) {}
+  constructor(
+    private produtosService: ProdutosService,
+    private toastService: ToastService) {}
 
   onSubmit() {
     if (!this.produto.nome || this.produto.taxaAnual <= 0 || this.produto.prazoMaximoMeses <= 0) {
@@ -37,6 +40,7 @@ export class CadastroProduto {
       this.produtosService.cadastrarProduto(novoProduto).subscribe({
         next: (res) => {
           console.log('Produto cadastrado:', res);
+          this.toastService.success('Produto cadastrado com sucesso!');
           this.produto = { nome: '', taxaAnual: 0, prazoMaximoMeses: 0 };
         },
         error: (err) => {

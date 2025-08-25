@@ -90,7 +90,7 @@ describe('CalculadoraCredito', () => {
     component.prazo = 12;
     component.tipoCalculo = 'sac';
 
-    // Mock services for salvarSimulacao
+
     simulacoesServiceSpy.listarSimulacoes.and.returnValue(of([]));
     simulacoesServiceSpy.salvarSimulacao.and.returnValue(of({
       id: 1,

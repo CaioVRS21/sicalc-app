@@ -90,9 +90,6 @@ describe('CadastroProduto', () => {
   produtosServiceSpy.cadastrarProduto.and.returnValue(of({ id: 1, nome: 'Novo', taxaAnual: 10, prazoMaximoMeses: 12 }));
   component.produto = { nome: 'Novo', taxaAnual: 10, prazoMaximoMeses: 12 };
   component.onSubmit();
-
-  // expect(produtosServiceSpy.listarProdutos).toHaveBeenCalled();
-  // expect(produtosServiceSpy.cadastrarProduto).not.toHaveBeenCalled();
 });
 
 it('should increment ID based on existing products', () => {

@@ -23,6 +23,18 @@
       "nome": "NomeTeste1",
       "taxaAnual": 12,
       "prazoMaximoMeses": 12
+    },
+    {
+      "id": 5,
+      "nome": "NomeTeste22",
+      "taxaAnual": 50,
+      "prazoMaximoMeses": 30
+    },
+    {
+      "id": 6,
+      "nome": "NomeTeste33",
+      "taxaAnual": 35,
+      "prazoMaximoMeses": 24
     }
   ]
 }

@@ -4,6 +4,7 @@ import { ProdutosService, Produto } from '../service/produtos-service/produtos-s
 import { NgFor, NgIf, CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { SimulacoesService } from '../service/simulacoes-service/simulacoes-service';
+import { ToastService } from '../service/toast-service/toast-service';
 
 @Component({
   selector: 'app-calculadora-credito',
@@ -23,10 +24,12 @@ export class CalculadoraCredito {
   taxaMensal: number | null = null;
   amortizacao: number[] = []; // novo campo para o resultado do cálculo SAC
   tabelaAmortizacao: { parcela: number; juros: number; amortizacao: number; saldo: number; }[] = [];
+  prazoErroMsg: string | null = null;
 
   constructor(
     private produtosService: ProdutosService,
-    private simulacoesService: SimulacoesService
+    private simulacoesService: SimulacoesService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit() {
@@ -38,38 +41,68 @@ export class CalculadoraCredito {
     });
   }
 
+  get produtoSelecionado(){
+    return this.produtos.find(p => Number(p.id) === Number(this.produtoSelecionadoId));
+  }
+
+  isPrazoValido(): boolean {
+    const produto = this.produtoSelecionado;
+    if (!produto || !this.prazo) return true;
+    return Number(this.prazo) <= Number(produto.prazoMaximoMeses);
+  }
+
+  onPrazoChange() {
+    const produto = this.produtoSelecionado;
+    if (!produto || this.prazo == null) {
+     this.prazoErroMsg = null;
+      return;
+    }
+   if (Number(this.prazo) > Number(produto.prazoMaximoMeses)) {
+      this.prazoErroMsg = `Prazo máximo para "${produto.nome}" é ${produto.prazoMaximoMeses} meses.`;
+    }
+  }
+
+  private validarPrazoAntesDeCalcular(): boolean {
+    const produto = this.produtoSelecionado;
+    if (produto && this.prazo && Number(this.prazo) > Number(produto.prazoMaximoMeses)){
+      return false;
+    }
+    return true;
+  }
+
   calcular() {
-  if (this.tipoCalculo === 'price') {
-    this.calcularParcela();
-    const produto = this.produtos.find(p => Number(p.id) === Number(this.produtoSelecionadoId));
-    if (produto && this.valorDesejado && this.prazo) {
-      this.salvarSimulacao(
-        produto,
-        Number(produto.taxaAnual) / 12 / 100,
-        this.tabelaAmortizacao[0]?.parcela ?? 0,
-        this.prazo,
-        this.valorDesejado,
-        this.tabelaAmortizacao.reduce((acc, cur) => acc + cur.parcela, 0),
-        this.tipoCalculo,
-        this.tabelaAmortizacao
-      );
-    }
-  } else if (this.tipoCalculo === 'sac') {
-    this.calcularAmortizacaoSAC();
-    const produto = this.produtos.find(p => Number(p.id) === Number(this.produtoSelecionadoId));
-    if (produto && this.valorDesejado && this.prazo) {
-      this.salvarSimulacao(
-        produto,
-        Number(produto.taxaAnual) / 12 / 100,
-        this.tabelaAmortizacao[0]?.parcela ?? 0,
-        this.prazo,
-        this.valorDesejado,
-        this.tabelaAmortizacao.reduce((acc, cur) => acc + cur.parcela, 0),
-        this.tipoCalculo,
-        this.tabelaAmortizacao
-      );
-    }
-  } 
+    if (!this.validarPrazoAntesDeCalcular()) return;
+    if (this.tipoCalculo === 'price') {
+      this.calcularParcela();
+      const produto = this.produtos.find(p => Number(p.id) === Number(this.produtoSelecionadoId));
+      if (produto && this.valorDesejado && this.prazo) {
+        this.salvarSimulacao(
+          produto,
+          Number(produto.taxaAnual) / 12 / 100,
+          this.tabelaAmortizacao[0]?.parcela ?? 0,
+          this.prazo,
+          this.valorDesejado,
+          this.tabelaAmortizacao.reduce((acc, cur) => acc + cur.parcela, 0),
+          this.tipoCalculo,
+          this.tabelaAmortizacao
+        );
+      }
+    } else if (this.tipoCalculo === 'sac') {
+      this.calcularAmortizacaoSAC();
+      const produto = this.produtos.find(p => Number(p.id) === Number(this.produtoSelecionadoId));
+      if (produto && this.valorDesejado && this.prazo) {
+        this.salvarSimulacao(
+          produto,
+          Number(produto.taxaAnual) / 12 / 100,
+          this.tabelaAmortizacao[0]?.parcela ?? 0,
+          this.prazo,
+          this.valorDesejado,
+          this.tabelaAmortizacao.reduce((acc, cur) => acc + cur.parcela, 0),
+          this.tipoCalculo,
+          this.tabelaAmortizacao
+        );
+      }
+    } 
 }
 
 calcularParcela() {
@@ -106,10 +139,6 @@ calcularParcela() {
       saldo: saldoDevedor > 0 ? saldoDevedor : 0
     });
   }
-
-  // Chama o método para salvar a simulação
-  this.salvarSimulacao(produto, taxaMensal, parcela, prazo, valorDesejado, this.valorTotal, this.tipoCalculo, this.tabelaAmortizacao);
-
   console.log(`Parcela: ${this.parcela}, Taxa Mensal: ${this.taxaMensal}`);
 }
 
@@ -140,11 +169,20 @@ salvarSimulacao(
         tabelaAmortizacao: [...tabelaAmortizacao]
       };
       this.simulacoesService.salvarSimulacao(novaSimulacao).subscribe({
-        next: (res) => console.log('Simulação salva:', res),
-        error: (err) => console.error('Erro ao salvar simulação:', err)
+        next: (res) => {
+          this.toastService.success('Simulação salva com sucesso!');
+            console.log('Simulação salva:', res);
+          },
+        error: (err) => {
+          this.toastService.error('Erro ao salvar simulação.');
++            console.error('Erro ao salvar simulação:', err);
+          }
       });
     },
-    error: (err) => console.error('Erro ao buscar simulações:', err)
+    error: (err) => {
+      console.error('Erro ao buscar simulações:', err);
+      this.toastService.error('Erro ao buscar simulações.');
+    }
   });
 }
 
@@ -180,4 +218,19 @@ salvarSimulacao(
 
   this.tabelaAmortizacao = tabela;
 }
+
+ onProdutoChange() {
+    // limpa valores dependentes ao trocar produto
+    this.valorDesejado = null;
+    this.prazo = null;
+    this.tabelaAmortizacao = [];
+    this.prazoErroMsg = null;
+  }
+
+  onValorChange() {
+    // limpa prazo/amortização quando valor muda
+    this.prazo = null;
+    this.tabelaAmortizacao = [];
+    this.prazoErroMsg = null;
+  }
 }

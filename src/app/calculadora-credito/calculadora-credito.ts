@@ -119,7 +119,6 @@ calcularParcela() {
   const prazo = this.prazo;
   const valorDesejado = this.valorDesejado;
 
-  // Fórmula do sistema Price
   const parcela = valorDesejado * (taxaMensal * Math.pow(1 + taxaMensal, prazo)) / (Math.pow(1 + taxaMensal, prazo) - 1);
 
   this.taxaMensal = taxaMensal;
@@ -127,7 +126,6 @@ calcularParcela() {
   this.valorTotal = parcela * prazo;
   this.produtoNome = produto.nome;
 
-  // Monta a tabela de amortização para Price
   this.tabelaAmortizacao = [];
   let saldoDevedor = valorDesejado;
   for (let mes = 1; mes <= prazo; mes++) {
@@ -141,7 +139,7 @@ calcularParcela() {
       saldo: saldoDevedor > 0 ? saldoDevedor : 0
     });
   }
-  this.resetPagination(); // Reseta para a primeira página da tabela
+  this.resetPagination(); 
   console.log(`Parcela: ${this.parcela}, Taxa Mensal: ${this.taxaMensal}`);
 }
 
@@ -252,5 +250,5 @@ this.currentPage = 1;
     if (this.currentPage < this.totalPages) this.currentPage++;
   }
 
-  private resetPagination() { this.currentPage = 1; }
+  resetPagination() { this.currentPage = 1; }
 }

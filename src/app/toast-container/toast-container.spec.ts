@@ -11,13 +11,13 @@ describe('ToastContainer', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ToastContainer],
-      providers: [ToastService] // Provide the real service for integration testing
+      providers: [ToastService]  
     })
     .compileComponents();
 
     fixture = TestBed.createComponent(ToastContainer);
     component = fixture.componentInstance;
-    toastService = TestBed.inject(ToastService); // Get the service instance
+    toastService = TestBed.inject(ToastService); 
     fixture.detectChanges();
   });
 
@@ -26,9 +26,8 @@ describe('ToastContainer', () => {
   });
 
   it('should display a toast when the service emits one', () => {
-    // Adiciona um toast através do serviço
     toastService.success('Test success message');
-    fixture.detectChanges(); // Atualiza a view
+    fixture.detectChanges(); 
 
     const toastElement = fixture.nativeElement.querySelector('.bg-green-600');
     expect(toastElement).toBeTruthy();
@@ -47,11 +46,11 @@ describe('ToastContainer', () => {
   });
 
   it('should call dismiss on the service when the close button is clicked', () => {
-    const dismissSpy = spyOn(toastService, 'dismiss').and.callThrough();
+    const dismissSpy = jest.spyOn(toastService, 'dismiss'); // não chame mockRestore() aqui
     toastService.info('A toast to dismiss');
     fixture.detectChanges();
 
-    // Encontra o botão de fechar e clica nele
+    
     const closeButton = fixture.debugElement.query(By.css('button'));
     closeButton.triggerEventHandler('click', null);
     fixture.detectChanges();

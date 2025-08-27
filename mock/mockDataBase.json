@@ -37,9 +37,15 @@
       "prazoMaximoMeses": 24
     },
     {
-      "id": 7,
+      "id": "7",
       "nome": "ProdutoToastTeste",
       "taxaAnual": 24,
+      "prazoMaximoMeses": 36
+    },
+    {
+      "id": 8,
+      "nome": "NomeTesteNovo",
+      "taxaAnual": 15,
       "prazoMaximoMeses": 36
     }
   ]
